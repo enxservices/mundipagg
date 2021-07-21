@@ -34,7 +34,7 @@ type Response struct {
 func Do(method string, data interface{}, secretKey string, indepotencyKey string, url string) (*Response, error) {
 	postData, err := json.Marshal(data)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(postData))
@@ -62,7 +62,7 @@ func Do(method string, data interface{}, secretKey string, indepotencyKey string
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 400 {
-		err = errors.New("Invalid Request:\nSent:\n" + string(postData) + "Received:\n" + string(body))
+		return nil, errors.New("Invalid Request:\nSent:\n" + string(postData) + "Received:\n" + string(body))
 	}
 
 	response := &Response{MundipaggJSONAnswer: string(body)}

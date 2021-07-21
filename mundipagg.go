@@ -9,7 +9,7 @@ type Mundipagg interface {
 	NewSubscription(subscription *Subscription, uuid string) (*Response, error)
 	NewCustomer(customer *Customer, uuid string) (*Response, error)
 	NewCardByToken(customerID string, cardToken string, uuid string) (*Response, error)
-	UpdateStartAt(input *string, customerID string, uuid string) (*Response, error)
+	UpdateStartAt(input *string, subscriptionID string, uuid string) (*Response, error)
 	UpdateNextBillingDay(nextBillingDay *time.Time, customerID string, uuid string) (*Response, error)
 	AddDiscount(billExtras *BillExtras, subscriptionID string, uuid string) (*Response, error)
 }
@@ -66,13 +66,13 @@ func (m mundipagg) NewSubscription(s *Subscription, uuid string) (*Response, err
 	return resp, nil
 }
 
-func (m mundipagg) UpdateStartAt(startAt *string, customerID string, uuid string) (*Response, error) {
+func (m mundipagg) UpdateStartAt(startAt *string, subscriptionID string, uuid string) (*Response, error) {
 	input := struct {
 		StartAt *string `json:"start_at,omitempty"`
 	}{
 		StartAt: startAt,
 	}
-	completeURL := SUBSCRIPTIONURL + "/" + customerID + SUBSCRIPTIONUPDATESTARTATURL
+	completeURL := SUBSCRIPTIONURL + "/" + subscriptionID + SUBSCRIPTIONUPDATESTARTATURL
 	resp, err := Do(http.MethodPatch, input, m.BasicSecretAuthKey, uuid, completeURL)
 	if err != nil {
 		return nil, err
